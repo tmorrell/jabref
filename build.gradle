@@ -18,6 +18,7 @@ plugins {
     id "com.github.youribonnaffe.gradle.format" version "1.5"
     id "net.ltgt.errorprone" version "0.0.8"
     id 'me.champeau.gradle.jmh' version '0.3.0'
+    id "info.solidsoft.pitest" version "1.1.4"
 }
 
 apply plugin: "java"
@@ -370,4 +371,11 @@ jmh {
     warmupIterations = 5
     iterations = 10
     fork = 2
+}
+
+pitest {
+    targetClasses = ['net.sf.jabref.model.*']  //by default "${project.group}.*"
+    threads = 4
+    pitestVersion = '1.10'
+    outputFormats = ['XML', 'HTML']
 }
