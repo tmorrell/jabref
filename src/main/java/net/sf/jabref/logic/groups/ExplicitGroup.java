@@ -41,7 +41,7 @@ public class ExplicitGroup extends KeywordGroup {
         if(lastIndex < 0) {
             return searchExpression;
         } else {
-            return searchExpression.substring(lastIndex);
+            return searchExpression.substring(lastIndex + 1);
         }
     }
 
