@@ -41,13 +41,13 @@ public class KeywordGroup extends AbstractGroup {
     public static final String ID = "KeywordGroup:";
 
     private final String searchField;
-    private final String searchExpression;
+
+    private String searchExpression;
+
     private final boolean caseSensitive;
     private final boolean regExp;
     private Pattern pattern;
-
     private static final Log LOGGER = LogFactory.getLog(KeywordGroup.class);
-
 
     /**
      * Creates a KeywordGroup with the specified properties.
@@ -63,6 +63,11 @@ public class KeywordGroup extends AbstractGroup {
         if (this.regExp) {
             compilePattern();
         }
+    }
+
+
+    public void setSearchExpression(String searchExpression) {
+        this.searchExpression = searchExpression;
     }
 
     private void compilePattern() throws ParseException {
