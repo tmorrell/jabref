@@ -36,6 +36,15 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ExplicitGroup extends KeywordGroup {
 
+    public static String parseName(String searchExpression) {
+        int lastIndex = searchExpression.lastIndexOf('>');
+        if(lastIndex < 0) {
+            return searchExpression;
+        } else {
+            return searchExpression.substring(lastIndex);
+        }
+    }
+
     public static final String ID = "ExplicitGroup:";
 
     private final List<String> legacyEntryKeys = new ArrayList<>();
@@ -43,7 +52,7 @@ public class ExplicitGroup extends KeywordGroup {
     private static final Log LOGGER = LogFactory.getLog(ExplicitGroup.class);
 
     public ExplicitGroup(String name, GroupHierarchyType context) throws ParseException {
-        super(name, "groups", name, true, false, context);
+        super(parseName(name), "groups", name, true, false, context);
     }
 
     public static ExplicitGroup fromString(String s) throws ParseException {
