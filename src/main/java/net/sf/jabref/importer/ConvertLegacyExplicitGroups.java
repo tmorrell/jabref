@@ -53,7 +53,9 @@ public class ConvertLegacyExplicitGroups implements PostOpenAction {
             ExplicitGroup group = (ExplicitGroup) node.getGroup();
             if (!group.getLegacyEntryKeys().isEmpty()) {
                 List<GroupTreeNode> parents = getGroupPath(node);
-                group.setSearchExpression(parents.stream().map(g -> g.getName()).collect(Collectors.joining(">")));
+                String search = parents.stream().map(g -> g.getName()).collect(Collectors.joining(">"));
+                group.setName(search);
+                group.setSearchExpression(search);
                 findings.add(group);
             }
         }
