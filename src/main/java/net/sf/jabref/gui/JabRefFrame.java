@@ -108,6 +108,7 @@ import net.sf.jabref.gui.menus.FileHistoryMenu;
 import net.sf.jabref.gui.menus.RightClickMenu;
 import net.sf.jabref.gui.openoffice.OpenOfficePanel;
 import net.sf.jabref.gui.preftabs.PreferencesDialog;
+import net.sf.jabref.gui.protectterms.ProtectTermsDialog;
 import net.sf.jabref.gui.util.FocusRequester;
 import net.sf.jabref.gui.util.PositionWindow;
 import net.sf.jabref.gui.worker.MarkEntriesAction;
@@ -122,6 +123,7 @@ import net.sf.jabref.logic.help.HelpFile;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
 import net.sf.jabref.logic.preferences.LastFocusedTabPreferences;
+import net.sf.jabref.logic.protectterms.ProtectTermsLoader;
 import net.sf.jabref.logic.util.OS;
 import net.sf.jabref.logic.util.io.FileUtil;
 import net.sf.jabref.model.database.BibDatabaseMode;
@@ -1339,12 +1341,14 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         options.add(showPrefs);
 
         AbstractAction genFieldsCustomization = new GenFieldsCustomizationAction();
+        AbstractAction protectTerms = new ProtectTermsAction();
         options.add(genFieldsCustomization);
         options.add(customExpAction);
         options.add(customImpAction);
         options.add(customFileTypesAction);
         options.add(manageJournals);
-        options.add(manageSelectors);
+        options.add(customImpAction);
+        options.add(protectTerms);
         options.add(selectKeys);
         mb.add(options);
 
@@ -1932,6 +1936,19 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         }
     }
 
+    private class ProtectTermsAction extends MnemonicAwareAction {
+
+        public ProtectTermsAction() {
+            putValue(Action.NAME, Localization.menuTitle("Manage protected terms"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ProtectTermsDialog ecd = new ProtectTermsDialog(JabRefFrame.this,
+                    new ProtectTermsLoader(Collections.emptyList()));
+            ecd.setVisible(true);
+        }
+    }
     private class DatabasePropertiesAction extends MnemonicAwareAction {
 
         private DatabasePropertiesDialog propertiesDialog;
