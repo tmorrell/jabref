@@ -123,7 +123,6 @@ import net.sf.jabref.logic.help.HelpFile;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
 import net.sf.jabref.logic.preferences.LastFocusedTabPreferences;
-import net.sf.jabref.logic.protectedterms.ProtectedTermsLoader;
 import net.sf.jabref.logic.util.OS;
 import net.sf.jabref.logic.util.io.FileUtil;
 import net.sf.jabref.model.database.BibDatabaseMode;
@@ -1341,7 +1340,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         options.add(showPrefs);
 
         AbstractAction genFieldsCustomization = new GenFieldsCustomizationAction();
-        AbstractAction protectTerms = new ProtectTermsAction();
+        AbstractAction protectTerms = new ProtectedTermsAction();
         options.add(genFieldsCustomization);
         options.add(customExpAction);
         options.add(customImpAction);
@@ -1936,20 +1935,16 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         }
     }
 
-    private class ProtectTermsAction extends MnemonicAwareAction {
+    private class ProtectedTermsAction extends MnemonicAwareAction {
 
-        public ProtectTermsAction() {
+        public ProtectedTermsAction() {
             putValue(Action.NAME, Localization.menuTitle("Manage protected terms"));
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             ProtectedTermsDialog protectTermsDialog = new ProtectedTermsDialog(JabRefFrame.this,
-                    new ProtectedTermsLoader(
-                            Globals.prefs.getStringList(JabRefPreferences.PROTECTED_TERMS_ENABLED_INTERNAL),
-                            Globals.prefs.getStringList(JabRefPreferences.PROTECTED_TERMS_ENABLED_EXTERNAL),
-                            Globals.prefs.getStringList(JabRefPreferences.PROTECTED_TERMS_DISABLED_INTERNAL),
-                            Globals.prefs.getStringList(JabRefPreferences.PROTECTED_TERMS_DISABLED_EXTERNAL)));
+                    Globals.protectedTermsLoader);
             protectTermsDialog.setVisible(true);
         }
     }
