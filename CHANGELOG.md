@@ -22,6 +22,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Enhance the entry customization dialog to give better visual feedback
 - The arXiv fetcher now also supports free-text search queries
 - [#1345](https://github.com/JabRef/jabref/issues/1345) Cleanup ISSN
+- It is now possible to add your own lists of protected terms, see Options -> Manage protected terms
 
 ### Fixed
 - Fixed [#1264](https://github.com/JabRef/jabref/issues/1264): S with caron does not render correctly
