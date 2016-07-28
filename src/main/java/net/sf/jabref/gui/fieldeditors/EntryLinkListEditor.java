@@ -27,6 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -62,9 +63,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- * Created by Morten O. Alver 2007.02.22
- */
+
 public class EntryLinkListEditor extends JTable implements FieldEditor {
 
     private static final Log LOGGER = LogFactory.getLog(EntryLinkListEditor.class);
