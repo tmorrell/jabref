@@ -47,6 +47,7 @@ public class FieldName {
     public static final String PDF = "pdf";
     public static final String PS = "ps";
     public static final String PUBLISHER = "publisher";
+    public static final String RELATED = "related";
     public static final String REPORTNO = "reportno";
     public static final String REVIEW = "review";
     public static final String SCHOOL = "school";

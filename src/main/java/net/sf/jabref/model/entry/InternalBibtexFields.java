@@ -88,7 +88,7 @@ public class InternalBibtexFields {
         add(new BibtexSingleField(FieldName.BOOKTITLE, true, 175));
         add(new BibtexSingleField(FieldName.CHAPTER, true, BibtexSingleField.SMALL_W));
         dummy = new BibtexSingleField(FieldName.CROSSREF, true, BibtexSingleField.SMALL_W);
-        dummy.setExtras(EnumSet.of(FieldProperties.CROSSREF));
+        dummy.setExtras(EnumSet.of(FieldProperties.CROSSREF, FieldProperties.SINGLE_ENTRY_LINK));
         add(dummy);
         add(new BibtexSingleField(FieldName.EDITION, true, BibtexSingleField.SMALL_W));
         add(new BibtexSingleField(FieldName.EDITOR, true, BibtexSingleField.MEDIUM_W, 280));
@@ -195,6 +195,10 @@ public class InternalBibtexFields {
 
         dummy = new BibtexSingleField(FieldName.FILE, false);
         dummy.setExtras(EnumSet.of(FieldProperties.FILE_EDITOR));
+        add(dummy);
+
+        dummy = new BibtexSingleField(FieldName.RELATED, false);
+        dummy.setExtras(EnumSet.of(FieldProperties.MULTIPLE_ENTRY_LINK));
         add(dummy);
 
         add(new BibtexSingleField("search", false, 75));

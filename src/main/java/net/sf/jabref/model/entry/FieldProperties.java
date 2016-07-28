@@ -24,7 +24,9 @@ public enum FieldProperties {
     PAGINATION,
     TYPE,
     CROSSREF,
-    ISO_DATE;
+    ISO_DATE,
+    SINGLE_ENTRY_LINK,
+    MULTIPLE_ENTRY_LINK;
 
     public static final Set<FieldProperties> ALL_OPTS = EnumSet.allOf(FieldProperties.class);
 
