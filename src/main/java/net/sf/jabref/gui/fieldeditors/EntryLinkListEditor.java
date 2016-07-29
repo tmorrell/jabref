@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -153,7 +155,10 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                int row = getSelectedRow();
+                System.err.println(row);
                 addEntry();
+                setRowSelectionInterval(row, row);
             }
         });
 
@@ -264,9 +269,11 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
     private void addEntry() {
         int row = getSelectedRow();
+        System.err.println("Selected row: " + row);
         if (row == -1) {
             row = 0;
         }
+        System.err.println("Selected row: " + row);
         ParsedEntryLink entry = new ParsedEntryLink("", databaseContext.getDatabase());
         tableModel.addEntry(row, entry);
         entryEditor.updateField(this);
@@ -386,34 +393,33 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
     private class EntryLinkListTableModel extends DefaultTableModel {
 
-        private final List<ParsedEntryLink> list;
+        private final List<ParsedEntryLink> internalList = Collections.synchronizedList(new ArrayList<>());
 
 
-        public EntryLinkListTableModel(List<ParsedEntryLink> list) {
-            this.list = list;
+        public EntryLinkListTableModel(List<ParsedEntryLink> originalList) {
+            addEntries(originalList);
         }
 
         public String getText() {
-            String result = EntryLinkList.serialize(list);
-            System.err.println(result);
-            return result;
+            synchronized (internalList) {
+                String result = EntryLinkList.serialize(internalList);
+                return result;
+            }
         }
 
         public void addEntries(List<ParsedEntryLink> newList) {
-            synchronized (list) {
-                list.addAll(newList);
-                if (SwingUtilities.isEventDispatchThread()) {
-                    fireTableDataChanged();
-                } else {
-                    SwingUtilities.invokeLater(() -> fireTableDataChanged());
-                }
+            internalList.addAll(newList);
+            if (SwingUtilities.isEventDispatchThread()) {
+                fireTableDataChanged();
+            } else {
+                SwingUtilities.invokeLater(() -> fireTableDataChanged());
             }
 
         }
 
         public void setContent(List<ParsedEntryLink> newList) {
-            list.clear();
-            list.addAll(newList);
+            internalList.clear();
+            internalList.addAll(newList);
             if (SwingUtilities.isEventDispatchThread()) {
                 fireTableDataChanged();
             } else {
@@ -428,11 +434,11 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
         @Override
         public int getRowCount() {
-            if (list == null) {
+            if (internalList == null) {
                 return 0;
             }
-            synchronized (list) {
-                return list.size();
+            synchronized (internalList) {
+                return internalList.size();
             }
         }
 
@@ -443,8 +449,8 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            synchronized (list) {
-                ParsedEntryLink entry = list.get(rowIndex);
+            synchronized (internalList) {
+                ParsedEntryLink entry = internalList.get(rowIndex);
                 switch (columnIndex) {
                 case 0:
                     return entry.getKey();
@@ -458,24 +464,23 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
         }
 
         public ParsedEntryLink getEntry(int index) {
-            synchronized (list) {
-                return list.get(index);
+            synchronized (internalList) {
+                return internalList.get(index);
             }
         }
 
         public void setEntry(int index, ParsedEntryLink entry) {
-            synchronized (list) {
-                list.set(index, entry);
-                fireTableRowsUpdated(index, index);
-            }
+            internalList.set(index, entry);
+            fireTableRowsUpdated(index, index);
         }
 
         public void removeEntry(int index) {
-            synchronized (list) {
-                list.remove(index);
+            internalList.remove(index);
+            if (SwingUtilities.isEventDispatchThread()) {
                 fireTableRowsDeleted(index, index);
+            } else {
+                SwingUtilities.invokeLater(() -> fireTableRowsDeleted(index, index));
             }
-
         }
 
         /**
@@ -485,12 +490,13 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
          * @param entry The entry to insert.
          */
         public void addEntry(final int index, final ParsedEntryLink entry) {
-            synchronized (list) {
-                list.add(index, entry);
+            synchronized (internalList) {
+                System.err.println("Insert entry " + entry.getKey() + " at position " + index);
+                internalList.add(index, entry);
                 if (SwingUtilities.isEventDispatchThread()) {
-                    fireTableRowsInserted(index, index);
+                    fireTableDataChanged();
                 } else {
-                    SwingUtilities.invokeLater(() -> fireTableRowsInserted(index, index));
+                    SwingUtilities.invokeLater(() -> fireTableDataChanged());
                 }
             }
         }
@@ -502,17 +508,22 @@ public class EntryLinkListEditor extends JTable implements FieldEditor {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            synchronized (list) {
+            /* synchronized (list) {
                 if (columnIndex == 0) {
                     list.get(rowIndex).setKey((String) aValue);
-                    fireTableRowsUpdated(rowIndex, rowIndex);
+                    if (SwingUtilities.isEventDispatchThread()) {
+                        fireTableRowsUpdated(rowIndex, rowIndex);
+                    } else {
+                        SwingUtilities.invokeLater(() -> fireTableRowsUpdated(rowIndex, rowIndex));
+                    }
+
                 }
-            }
+            } */
         }
 
         public void addEntry(ParsedEntryLink entry) {
-            synchronized (list) {
-                list.add(entry);
+            synchronized (internalList) {
+                internalList.add(entry);
                 if (SwingUtilities.isEventDispatchThread()) {
                     fireTableDataChanged();
                 } else {
